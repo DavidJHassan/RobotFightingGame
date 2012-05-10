@@ -1,7 +1,6 @@
 // Basic Robot class that can be inherited to create different kinds of robots
 class Robot
 {
-
 	private:
 		static int n;//Number of robots currently alive in game
 
