@@ -1,6 +1,3 @@
-#include <iostream>
-using namespace std;
-
 // Basic Robot class that can be inherited to create different kinds of robots
 class Robot
 {
