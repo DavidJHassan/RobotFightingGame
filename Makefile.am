@@ -1,6 +1,7 @@
 AM_CXXFLAGS = -I$(top_srcdir)/Source/ 
 
 bin_PROGRAMS = robotFightingGame
-racing_SOURCES = 		
+robotFightingGame_SOURCES = Source/main.cpp \
+				Source/Robot.cpp 
 
 AM_CPPFLAGS = -DDATADIR="\"$(datadir)/RobotFightingGame\""
