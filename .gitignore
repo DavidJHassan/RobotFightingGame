@@ -34,4 +34,4 @@ Doxyfile
 .DS_Store
 *.swp
 
-
+*.pyc
