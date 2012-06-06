@@ -1,3 +1,11 @@
 RobotFightingGame
 =================
 
+How to run (Windows Tutorial):
+1. Download and install Panda3D
+2. Download the source code and models/skins from this repository
+3. Open up command prompt
+4. change to the directory where you installed Panda3D (ex: cd C:\Panda3D-1.8.0)
+5. Place the models and skins in the folder models
+6. In your command prompt type "ppython  "The directory where your source code is located at" Source/main.py "
+7. Enjoy
