@@ -44,7 +44,6 @@ class MyApp(ShowBase):
         self.CAMERA_HEIGHT = 10
         self.CAMERA_LENGTH = 25
         self.setCamera()
-        self.taskMgr.add(self.Update, "UpdateCamera") #This is used to update the camera every frame(needed for ZoomIn/Out)
         ####################################
 
         #Control Schemes##############################
@@ -155,21 +154,22 @@ class MyApp(ShowBase):
             self.ThirdPerson = False
         else:
             self.ThirdPerson = True
+        
+        self.setCamera()
 
     def ZoomIn(self):
         if(self.Zoom < self.CAMERA_LENGTH - 15):
             self.Zoom+=.1
+        self.setCamera()
 
     def ZoomOut(self):
         if(self.Zoom > -(self.CAMERA_LENGTH - 10) ):
             self.Zoom-=.1
-
+        self.setCamera()
+    
     def ResetZoom(self):
         self.Zoom = 0
 
-    def Update(self,task):
-        self.setCamera()
-        return Task.cont
 
 app = MyApp()
 app.run()
