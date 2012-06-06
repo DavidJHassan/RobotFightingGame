@@ -10,7 +10,7 @@ from panda3d.core import CollisionNode
 class Head(NodePath):
 
     def __init__(self, x, y, z):
-        NodePath.__init__(self,loader.loadModel("RobotFightingGame/Models"))
+        NodePath.__init__(self,loader.loadModel("Models/robothead"))
 
         min, max = self.getTightBounds()
         size = max - min
