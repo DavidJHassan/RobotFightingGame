@@ -9,15 +9,19 @@ from panda3d.core import NodePath
 from panda3d.core import CollisionSphere
 from panda3d.core import CollisionNode
 from panda3d.core import CollisionHandlerEvent
+from panda3d.core import Vec3
 
 class Bullet(NodePath):
     
-    def __init__(self, x, y, z):
+    def __init__(self, x, y, z, direction):
         NodePath.__init__(self,loader.loadModel("models/box"))
  
         self.reparentTo(render )
         self.setPos(x, y, z)
         
+        self.direction = Vec3()
+        self.direction.set(direction.getX(), direction.getY(), direction.getZ() )
+     
         min, max = self.getTightBounds()
         size = max - min
         maximum = -1
@@ -37,6 +41,6 @@ class Bullet(NodePath):
         """if task.time >= 1.0 :
             self.bullets[n].removeNode()
             return Task.done"""
-        self.setY( self.getY() + 0.5)
+        self.setPos(self.getX() + (0.5 * self.direction.getX()), self.getY() + (0.5 * self.direction.getY()), 0 )
         return Task.cont
             
