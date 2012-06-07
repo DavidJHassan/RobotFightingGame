@@ -13,7 +13,6 @@ from panda3d.core import Vec3
 from Bullet import Bullet
 from Robot import Robot
 
-
 class MyApp(ShowBase):
 
     def __init__(self):
