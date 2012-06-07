@@ -7,8 +7,9 @@ from direct.interval.IntervalGlobal import Sequence
 from panda3d.core import Point3
 from panda3d.core import CollisionHandlerEvent
 from panda3d.core import CollisionTraverser
+from panda3d.core import Mat3
+from panda3d.core import Vec3
 
- 
 from Bullet import Bullet
 from Robot import Robot
 
@@ -36,12 +37,17 @@ class MyApp(ShowBase):
 
         self.player = self.loader.loadModel("models/box")
         self.player.setPos(0,0,0)
+        self.playerDirection = Vec3()
+        self.playerDirection.set(0.0,1.0,0.0)
+
         self.rotationX = 0
         self.rotationZ = 0
         self.player.reparentTo(self.render)
 
         #Sets up a Third Person Camera View#
         self.ThirdPerson = True
+        self.cameraDirection = Vec3()
+        self.cameraDirection.set(0.0,1.0,0.0)
         self.Zoom = 0
         self.CAMERA_HEIGHT = 10
         self.CAMERA_LENGTH = 25
@@ -125,7 +131,7 @@ class MyApp(ShowBase):
         return Task.cont
 
     def fire(self):
-        b = Bullet(self.player.getX(), self.player.getY() + 1, self.player.getZ())
+        b = Bullet(self.player.getX(), self.player.getY() + 1, self.player.getZ(), self.playerDirection)
         print b.cnodePath
         base.cTrav.addCollider(b.cnodePath, base.event)
         colliders = base.cTrav.getColliders()
@@ -135,7 +141,7 @@ class MyApp(ShowBase):
 
     def setCamera(self):
         if(self.ThirdPerson):
-            self.camera.setPos(self.player.getX(), self.player.getY() - self.CAMERA_LENGTH + self.Zoom, self.player.getZ() + self.CAMERA_HEIGHT)
+            self.camera.setPos(self.player.getX() - self.CAMERA_LENGTH * self.cameraDirection.getX(), self.player.getY() - (self.CAMERA_LENGTH * self.cameraDirection.getY())+ self.Zoom, self.player.getZ() + self.CAMERA_HEIGHT)
             self.camera.setHpr( self.rotationX, -20,self.rotationZ)
         else:
             self.camera.setPos(self.player.getX(), self.player.getY(), self.player.getZ() + self.CAMERA_HEIGHT)
@@ -150,23 +156,41 @@ class MyApp(ShowBase):
         self.lookX()
 
     def lookX(self):
-        self.player.setHpr(self.rotationX,0,0)
+        self.player.setH(self.rotationX)
+        matrix = Mat3()
+        matrix.setRotateMat(self.rotationX)
+        self.playerDirection.set(0, 1, 0)
+        self.playerDirection = matrix.xform(self.playerDirection)
+        
+        if self.ThirdPerson == False:
+            self.player.setHpr(self.rotationX,0,0)
+        else: 
+            self.cameraDirection.set(0,1,0)
+            self.cameraDirection = matrix.xform(self.cameraDirection)
+
         self.setCamera()
 
     def up(self):
-        self.player.setPos(self.player.getX(), self.player.getY() + 1, self.player.getZ() )
+        self.player.setPos(self.player.getX() + (1 * self.playerDirection.getX() ), self.player.getY() + (1 * self.playerDirection.getY()), self.player.getZ() )
         self.setCamera()
 
     def down(self):
-        self.player.setPos(self.player.getX(), self.player.getY() - 1, self.player.getZ() )
+        self.player.setPos(self.player.getX() - (1 * self.playerDirection.getX() ), self.player.getY() - (1 * self.playerDirection.getY()), self.player.getZ() )
         self.setCamera()
   
+    def rotateVec(self, vector, angle):
+        matrix = Mat3()
+        matrix.setRotateMat(angle)
+        return matrix.xform(vector)
+    
     def left(self):
-        self.player.setPos(self.player.getX() - 1, self.player.getY(), self.player.getZ() )
+        direction = self.rotateVec(self.playerDirection, 90)
+        self.player.setPos(self.player.getX() + (1 * direction.getX() ), self.player.getY() + (1 * direction.getY() ), self.player.getZ() )
         self.setCamera()
   
     def right(self):
-        self.player.setPos(self.player.getX() + 1, self.player.getY(), self.player.getZ() )
+        direction = self.rotateVec(self.playerDirection, 90)
+        self.player.setPos(self.player.getX() - (1 * direction.getX() ), self.player.getY() - (1 * direction.getY() ), self.player.getZ() )
         self.setCamera()
 
     def TogglePerson(self):
