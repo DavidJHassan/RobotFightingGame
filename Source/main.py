@@ -36,6 +36,8 @@ class MyApp(ShowBase):
 
         self.player = self.loader.loadModel("models/box")
         self.player.setPos(0,0,0)
+        self.rotationX = 0
+        self.rotationZ = 0
         self.player.reparentTo(self.render)
 
         #Sets up a Third Person Camera View#
@@ -70,6 +72,12 @@ class MyApp(ShowBase):
 
         self.accept("d", self.right)
         self.accept("d-repeat",self.right)
+
+        self.accept("q",self.lookLeft)
+        self.accept("q-repeat",self.lookLeft)
+
+        self.accept("e",self.lookRight)
+        self.accept("e-repeat",self.lookRight)
 
         self.accept( 'mouse1', self.fire)
         #self.accept( 'mouse1-up', self.setMouseButton)
@@ -128,10 +136,22 @@ class MyApp(ShowBase):
     def setCamera(self):
         if(self.ThirdPerson):
             self.camera.setPos(self.player.getX(), self.player.getY() - self.CAMERA_LENGTH + self.Zoom, self.player.getZ() + self.CAMERA_HEIGHT)
-            self.camera.setHpr( 0, -20 ,0)
+            self.camera.setHpr( self.rotationX, -20,self.rotationZ)
         else:
             self.camera.setPos(self.player.getX(), self.player.getY(), self.player.getZ() + self.CAMERA_HEIGHT)
-            self.camera.setHpr( 0, -20,0)
+            self.camera.setHpr( self.rotationX, -20 ,self.rotationZ)
+
+    def lookLeft(self):
+        self.rotationX+= 0.2
+        self.lookX()
+
+    def lookRight(self):
+        self.rotationX-= 0.2
+        self.lookX()
+
+    def lookX(self):
+        self.player.setHpr(self.rotationX,0,0)
+        self.setCamera()
 
     def up(self):
         self.player.setPos(self.player.getX(), self.player.getY() + 1, self.player.getZ() )
