@@ -35,12 +35,14 @@ class MyApp(ShowBase):
             print r.cnodePath
             base.cTrav.addCollider( r.cnodePath, base.event)
 
+
         self.player = self.loader.loadModel("models/box")
         self.player.setPos(0,0,0)
         self.playerDirection = Vec3()
         self.playerDirection.set(0.0,1.0,0.0)
 
         self.rotationX = 0
+        self.rotationY = 0
         self.rotationZ = 0
         self.player.reparentTo(self.render)
 
@@ -84,6 +86,18 @@ class MyApp(ShowBase):
 
         self.accept("e",self.lookRight)
         self.accept("e-repeat",self.lookRight)
+
+        self.accept("page_up", self.lookUp)
+        self.accept("page_up-repeat", self.lookUp)
+
+        self.accept("page_down",self.lookDown)
+        self.accept("page_down-repeat",self.lookDown)
+
+        self.accept("[",self.tiltLeft)
+        self.accept("[-repeat",self.tiltLeft)
+
+        self.accept("]",self.tiltRight)
+        self.accept("]-repeat",self.tiltRight)
 
         self.accept( 'mouse1', self.fire)
         #self.accept( 'mouse1-up', self.setMouseButton)
@@ -142,18 +156,36 @@ class MyApp(ShowBase):
     def setCamera(self):
         if(self.ThirdPerson):
             self.camera.setPos(self.player.getX() - self.CAMERA_LENGTH * self.cameraDirection.getX(), self.player.getY() - (self.CAMERA_LENGTH * self.cameraDirection.getY())+ self.Zoom, self.player.getZ() + self.CAMERA_HEIGHT)
-            self.camera.setHpr( self.rotationX, -20,self.rotationZ)
+            self.camera.setHpr( self.rotationX, -20 + self.rotationY, self.rotationZ)
         else:
             self.camera.setPos(self.player.getX(), self.player.getY(), self.player.getZ() + self.CAMERA_HEIGHT)
-            self.camera.setHpr( self.rotationX, -20 ,self.rotationZ)
+            self.camera.setHpr( self.rotationX, -20 + self.rotationY ,self.rotationZ)
 
     def lookLeft(self):
-        self.rotationX+= 0.2
+        self.rotationX+= 0.5
         self.lookX()
 
     def lookRight(self):
-        self.rotationX-= 0.2
+        self.rotationX-= 0.5
         self.lookX()
+
+    def lookUp(self):
+        self.rotationY+=0.5
+        self.setCamera()
+
+    def lookDown(self):
+        self.rotationY-=0.5
+        self.setCamera()
+
+    def tiltLeft(self):
+        if(self.rotationZ != -12.5):
+            self.rotationZ-=0.5
+        self.setCamera()
+
+    def tiltRight(self):
+        if(self.rotationZ != 12.5):
+            self.rotationZ+=0.5
+        self.setCamera()
 
     def lookX(self):
         self.player.setH(self.rotationX)
