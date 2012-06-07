@@ -20,7 +20,7 @@ class Bullet(NodePath):
         self.setPos(x, y, z)
         
         self.direction = Vec3()
-        self.direction.set(direction.getX(), direction.getY(), direction.getZ() )
+        self.direction.set(direction.getX(), direction.getY(), direction.getZ())
      
         min, max = self.getTightBounds()
         size = max - min
