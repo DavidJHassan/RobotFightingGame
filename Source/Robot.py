@@ -12,7 +12,7 @@ from panda3d.core import CollisionNode
 class Robot(NodePath):
     
     def __init__(self, x, y, z):
-        NodePath.__init__(self,loader.loadModel("../Models/robothead"))
+        NodePath.__init__(self,loader.loadModel("../Models/robotfull"))
  
         min, max = self.getTightBounds()
         size = max - min
@@ -28,6 +28,8 @@ class Robot(NodePath):
         self.cnode = CollisionNode('CSrobot')
         self.cnode.addSolid(CollisionSphere(0,0,0,maximum + 0.3))
         self.cnodePath = self.attachNewNode(self.cnode)
+
+
         self.cnodePath.show()
 
             

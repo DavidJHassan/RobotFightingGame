@@ -35,8 +35,9 @@ class MyApp(ShowBase):
             base.cTrav.addCollider( r.cnodePath, base.event)
 
 
-        self.player = self.loader.loadModel("models/box")
+        self.player = self.loader.loadModel("../Models/robotfull")
         self.player.setPos(0,0,0)
+        self.player.setScale(4,4,4)
         self.playerDirection = Vec3()
         self.playerDirection.set(0.0,1.0,0.0)
 
@@ -50,7 +51,7 @@ class MyApp(ShowBase):
         self.cameraDirection = Vec3()
         self.cameraDirection.set(0.0,1.0,0.0)
         self.Zoom = 0
-        self.CAMERA_HEIGHT = 10
+        self.CAMERA_HEIGHT = 12
         self.CAMERA_LENGTH = 25
         self.setCamera()
         ####################################
@@ -157,7 +158,7 @@ class MyApp(ShowBase):
             self.camera.setPos(self.player.getX() - self.CAMERA_LENGTH * self.cameraDirection.getX(), self.player.getY() - (self.CAMERA_LENGTH * self.cameraDirection.getY())+ self.Zoom, self.player.getZ() + self.CAMERA_HEIGHT)
             self.camera.setHpr( self.rotationX, -20 + self.rotationY, self.rotationZ)
         else:
-            self.camera.setPos(self.player.getX(), self.player.getY(), self.player.getZ() + self.CAMERA_HEIGHT)
+            self.camera.setPos(self.player.getX(), self.player.getY()+2, self.player.getZ() + self.CAMERA_HEIGHT - 5)#-2 and -4 to adjust into fpv
             self.camera.setHpr( self.rotationX, -20 + self.rotationY ,self.rotationZ)
 
     def lookLeft(self):

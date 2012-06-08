@@ -7,10 +7,10 @@ from panda3d.core import NodePath
 from panda3d.core import CollisionSphere
 from panda3d.core import CollisionNode
 
-class Head(NodePath):
+class Leg(NodePath):
 
     def __init__(self, x, y, z):
-        NodePath.__init__(self,loader.loadModel("../Models/robothead"))
+        NodePath.__init__(self,loader.loadModel("../Models/robotleg"))
 
         min, max = self.getTightBounds()
         size = max - min
@@ -22,9 +22,10 @@ class Head(NodePath):
         self.reparentTo(render)
         self.setPos(x, y, z)
 
-        self.cnode = CollisionNode('CSrobothead')
+        self.cnode = CollisionNode('CSrobotleg')
         self.cnode.addSolid(CollisionSphere(0,0,0,maximum + 0.3))
         self.cnodePath = self.attachNewNode(self.cnode)
         self.cnodePath.show()
+
 
 
