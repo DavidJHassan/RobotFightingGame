@@ -9,12 +9,12 @@ from panda3d.core import CollisionNode
 
 class BodyPart:
 
-    def __init__(self, position, file, name, parent, scaleX =1, scaleY =1, scaleZ =1):
+    def __init__(self, position, file, name, parent, scaleX =4, scaleY =4, scaleZ =4):
         
         self.node = loader.loadModel(file)
         self.node.reparentTo(parent)
         self.node.setPos(position)
-        self.node.setScale( scaleX, scaleY, scaleZ)
+        self.node.setScale(scaleX, scaleY, scaleZ)
 
         min = Point3()
         max = Point3()
