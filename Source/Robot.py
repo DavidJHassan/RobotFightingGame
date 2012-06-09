@@ -17,10 +17,10 @@ class Robot(NodePath):
             
         point = Point3()
         point.set(0,0,5)
-        self.body = BodyPart(point, "../Models/robotbody","body",render,0.5,0.5,0.5)
+        self.body = BodyPart(point, "../Models/body","body",render)
         #base.cTrav.addCollider( self.body.cnodePath, base.event)
         
-        place = self.body.node.find("**/leftarm")
+        place = self.body.node.find("**/arm2")
         print place
         #point.set(0,0,self.body.size[2])
         #self.head = BodyPart(point, "../Models/robothead","head",self.body.node)
@@ -28,7 +28,10 @@ class Robot(NodePath):
 
         self.arms = []
         point.set(0,0,0)
-        self.arms.append(BodyPart(point, "../Models/robotarm","arm",place) )
+        self.arms.append(BodyPart(point, "../Models/arm", "arm", place) )
+        tag = self.arms[0].node.find("**/arm")
+        pos = self.arms[0].node.getRelativePoint(tag, point )
+        self.arms[0].node.setPos(-pos.getX(), -pos.getY(), -pos.getZ() )
         #point.set(-self.body.size[0] / 2,0,0)
         #self.arms.append(BodyPart(point, "../Models/robotarm","arm",self.body.node ) )
         #base.cTrav.addCollider( self.arms[0].cnodePath, base.event)
