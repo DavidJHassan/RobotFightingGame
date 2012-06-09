@@ -30,9 +30,7 @@ class MyApp(ShowBase):
         self.environ.setPos(-8, 42, 0)
 		
         for i in range( 10 ):
-            r = Robot(randint(-50, 50), randint(-50, 50), 0)
-            print r.cnodePath
-            base.cTrav.addCollider( r.cnodePath, base.event)
+            r = Robot(Point3().set(randint(-50, 50), randint(-50, 50), 0) )
 
 
         self.player = self.loader.loadModel("../Models/robotfull")
