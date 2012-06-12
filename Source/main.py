@@ -9,6 +9,7 @@ from panda3d.core import CollisionHandlerEvent
 from panda3d.core import CollisionTraverser
 from panda3d.core import Mat3
 from panda3d.core import Vec3
+import sys
 
 from Bullet import Bullet
 from Robot import Robot
@@ -23,14 +24,23 @@ class MyApp(ShowBase):
         base.event.addInPattern('into')
         base.event.addAgainPattern('again')
         base.event.addOutPattern('out')
-
+        base.event.addInPattern('%fn-into')
+        
         self.environ = self.loader.loadModel("models/environment")
         self.environ.reparentTo(self.render)
         self.environ.setScale(0.25, 0.25, 0.25)
         self.environ.setPos(-8, 42, 0)
 		
+        point = Point3()
+        
+        #Create robots and assign ids used to access the correct object from collision entry data.
+        #TODO: Consider extending ids to all sprites
+        self.robots = dict()
+        self.id = 0
         for i in range( 10 ):
-            r = Robot(Point3().set(randint(-50, 50), randint(-50, 50), 0) )
+            point.set(randint(-50, 50), randint(-50, 50), 0)
+            self.robots[self.id] = Robot(point, self.id ) 
+            self.id += 1
 
 
         self.player = self.loader.loadModel("../Models/robotfull")
@@ -112,6 +122,7 @@ class MyApp(ShowBase):
         ###############################################
 
         self.accept('into', self.collision)
+        self.accept('bullet-into', self.bulletCollision )
         self.accept('again', self.collision)
         self.accept('out', self.collision)
 
@@ -120,21 +131,24 @@ class MyApp(ShowBase):
         self.disableMouse()
         
         base.cTrav.showCollisions(self.render)
-
-        colliders = base.cTrav.getColliders()
-        print "there are " + str(base.cTrav.getNumColliders() ) + " colliders"
-        for i in colliders:
-            print i
-        
-        patterns = base.event.getInPatterns()
-        print "there are " + str( base.event.getNumInPatterns())
-        for i in patterns:
-            print i
     
     def collision(self, entry):
-        print "collision detected"
-        print entry
-
+        t = 4
+        print "collision detected from=" + entry.getFromNodePath().getName()
+        #print entry
+    
+    def bulletCollision(self, entry):
+        print "bulletCollision detected"
+        try:
+            id = int(entry.getIntoNodePath().getName() )
+        except ValueError:
+            print "in bulletCollision " + entry.getIntoNodePath().getName() + " is not an integer"
+            sys.exit(1)
+            
+        if self.robots[id].damage() <= 0 :
+            del self.robots[id]
+    
+    
     def spinCameraTask(self, task):
         angleDegrees = task.time * 6.0
         angleRadians = angleDegrees * (pi / 180.0)

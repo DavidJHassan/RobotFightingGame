@@ -29,7 +29,7 @@ class Bullet(NodePath):
             if i > maximum:
                 maximum = i
 
-        self.cnode = CollisionNode('CSbullet')
+        self.cnode = CollisionNode('bullet')
         self.cnode.addSolid(CollisionSphere(0, 0, 0, maximum + 0.3))
         self.cnodePath = self.attachNewNode(self.cnode)
         self.cnodePath.show()

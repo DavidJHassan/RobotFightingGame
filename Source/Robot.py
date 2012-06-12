@@ -13,55 +13,58 @@ from BodyPart import BodyPart
 
 class Robot(NodePath):
     
-    def __init__(self, position):
+    def __init__(self, position, id):
             
         point = Point3()
-        point.set(0,0,5)
-        self.body = BodyPart(point,"../Models/robotbody","body",render,.5,.5,.5)
+        point.set(position.getX(), position.getY(), position.getZ() )
+        self.body = BodyPart(point,"../Models/body","body",render)
         #base.cTrav.addCollider( self.body.cnodePath, base.event)
         
-        leftArmPlace = self.body.node.find("**/leftarm")
+        leftArmPlace = self.body.node.find("**/arm1")
         if(leftArmPlace.isEmpty()):
             raise Exception("Left arm was not loaded properly")
-        rightArmPlace = self.body.node.find("**/rightarm")
+        rightArmPlace = self.body.node.find("**/arm2")
         if(rightArmPlace.isEmpty()):
             raise Exception("Right arm was not loaded properly")
         headPlace = self.body.node.find("**/head")
         if(headPlace.isEmpty()):
             raise Exception("The head was not loaded properly")
-        leftLegPlace = self.body.node.find("**/leftleg")
+        leftLegPlace = self.body.node.find("**/leg1")
         if(leftLegPlace.isEmpty()):
             raise Exception("Left leg was not loaded properly")
-        rightLegPlace = self.body.node.find("**/rightleg")
+        rightLegPlace = self.body.node.find("**/leg2s")
         if(rightLegPlace.isEmpty()):
             raise Exception("Right leg was not loaded properly")
 
-
-
-        #point.set(0,0,self.body.size[2])
-        #self.head = BodyPart(point, "../Models/robothead","head",self.body.node)
-        #base.cTrav.addCollider( self.head.cnodePath, base.event)
-
         self.arms = []
         point.set(0,0,0)
-        self.arms.append(BodyPart(point, "../Models/robotarm","leftarm",leftArmPlace))
-        self.arms.append(BodyPart(point,"../Models/robotarm","rightarm",rightArmPlace))
+        self.arms.append(BodyPart(point, "../Models/robotarm","leftarm",leftArmPlace) )
+        self.arms.append(BodyPart(point,"../Models/robotarm","rightarm",rightArmPlace) )
 
         self.legs =[]
-        self.legs.append(BodyPart(point, "../Models/robotleg","leftleg",leftLegPlace))
-        self.legs.append(BodyPart(point,"../Models/robotleg","rightleg",rightLegPlace))
+        self.legs.append(BodyPart(point, "../Models/robotleg","leftleg",leftLegPlace) )
+        self.legs.append(BodyPart(point,"../Models/robotleg","rightleg",rightLegPlace) )
 
-        self.head = []
-        self.head.append(BodyPart(point,"../Models/robothead","head",headPlace))
-        #point.set(-self.body.size[0] / 2,0,0)
-        #self.arms.append(BodyPart(point, "../Models/robotarm","arm",self.body.node ) )
-        #base.cTrav.addCollider( self.arms[0].cnodePath, base.event)
-        #base.cTrav.addCollider( self.arms[1].cnodePath, base.event)
+        self.head = BodyPart(point,"../Models/robothead","head",headPlace)
 
-        """self.legs = []
-        point.set(-self.body.size[0] / 2, 0, -self.body.size[2] /2)
-        self.legs.append(BodyPart(point, "../Models/robotleg","leg",self.body.node ) )
-        point.set(-self.body.size[0] / 2, 0, -self.body.size[2] /2)
-        self.legs.append(BodyPart(point, "../Models/robotleg","leg",self.body.node ) )
-        #base.cTrav.addCollider( self.legs[0].cnodePath, base.event)
-        #base.cTrav.addCollider( self.legs[1].cnodePath, base.event)"""
+        min = Point3()
+        max = Point3()
+        self.body.node.calcTightBounds(min, max)
+        self.size = max - min
+        print "size ="
+        print self.size
+        self.cnode = CollisionNode(str(id))
+        self.cnode.addSolid(CollisionSphere(0, 0, 0, self.size.length() /2 ) )
+        self.cnodePath = self.body.node.attachNewNode(self.cnode)
+        self.cnodePath.show()
+        base.cTrav.addCollider( self.cnodePath, base.event)
+
+    def damage(self):
+        self.body.node.removeNode()
+        return 0
+
+
+
+
+
+
