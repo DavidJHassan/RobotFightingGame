@@ -4,7 +4,7 @@
   "x2egg 'C:\Users\David\Desktop\robotfull.x' 'C:\Users\David\Desktop\robotfull.egg'"
 }
 <Texture> tref1 {
-  BatteredRobot.png
+  tex/BatteredRobot.png
 }
 <Group> robotfullFrame {
   <Transform> {
