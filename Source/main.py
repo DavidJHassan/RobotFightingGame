@@ -13,7 +13,8 @@ import sys
 
 from Bullet import Bullet
 from Robot import Robot
-
+from AI import AI
+    
 class MyApp(ShowBase):
 
     def __init__(self):
@@ -39,7 +40,7 @@ class MyApp(ShowBase):
         self.id = 0
         for i in range( 10 ):
             point.set(randint(-50, 50), randint(-50, 50), 0)
-            self.robots[self.id] = Robot(point, self.id ) 
+            self.robots[self.id] = AI(point, self.id ) 
             self.id += 1
 
 
@@ -134,19 +135,36 @@ class MyApp(ShowBase):
     
     def collision(self, entry):
         t = 4
-        print "collision detected from=" + entry.getFromNodePath().getName()
+        #print "collision detected from=" + entry.getFromNodePath().getName()
         #print entry
     
     def bulletCollision(self, entry):
-        print "bulletCollision detected"
+        #print "bulletCollision detected"
         try:
             id = int(entry.getIntoNodePath().getName() )
+            bulletID = int( entry.getFromNodePath().getTag("id") )
         except ValueError:
-            print "in bulletCollision " + entry.getIntoNodePath().getName() + " is not an integer"
-            sys.exit(1)
+            #print "in bulletCollision " + entry.getIntoNodePath().getName() + " is not an integer"
+            #print "or bullet id tag is not an int"
+            return 
+        
+        
+        if bulletID == id:
+            return
+        
+        entry.getFromNodePath().removeNode()
             
-        if self.robots[id].damage() <= 0 :
-            del self.robots[id]
+        try:
+            if self.robots[id].damage() <= 0 :
+                del self.robots[id]
+            point = Point3()
+            point.set(randint(-50, 50), randint(-50, 50), 0)
+            self.robots[self.id] = AI(point, self.id ) 
+            self.id += 1
+
+        except KeyError:
+            #TODO: figure out why keyerror is being called
+            return
     
     
     def spinCameraTask(self, task):
@@ -157,13 +175,7 @@ class MyApp(ShowBase):
         return Task.cont
 
     def fire(self):
-        b = Bullet(self.player.getX(), self.player.getY() + 1, self.player.getZ(), self.playerDirection)
-        print b.cnodePath
-        base.cTrav.addCollider(b.cnodePath, base.event)
-        colliders = base.cTrav.getColliders()
-        #print "there are " + str(base.cTrav.getNumColliders() ) + "colliders"
-        #for i in colliders:
-        #    print i
+        Bullet(self.player.getX(), self.player.getY() + 1, self.player.getZ(), self.playerDirection, -1)
 
     def setCamera(self):
         if(self.ThirdPerson):

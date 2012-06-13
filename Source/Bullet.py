@@ -13,7 +13,7 @@ from panda3d.core import Vec3
 
 class Bullet(NodePath):
     
-    def __init__(self, x, y, z, direction):
+    def __init__(self, x, y, z, direction, id):
         NodePath.__init__(self,loader.loadModel("models/box"))
  
         self.reparentTo(render )
@@ -21,7 +21,13 @@ class Bullet(NodePath):
         
         self.direction = Vec3()
         self.direction.set(direction.getX(), direction.getY(), direction.getZ())
-     
+        
+        if self.direction.length() == 0:
+            self.removeNode()
+            return
+        
+        self.direction /= direction.length()
+        
         min, max = self.getTightBounds()
         size = max - min
         maximum = -1
@@ -30,9 +36,11 @@ class Bullet(NodePath):
                 maximum = i
 
         self.cnode = CollisionNode('bullet')
+        self.cnode.setTag( "id", str(id) )
         self.cnode.addSolid(CollisionSphere(0, 0, 0, maximum + 0.3))
         self.cnodePath = self.attachNewNode(self.cnode)
         self.cnodePath.show()
+        base.cTrav.addCollider(self.cnodePath, base.event)
 
         taskMgr.add(self.updateBullet, "update Bullet")
 
