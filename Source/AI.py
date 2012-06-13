@@ -66,6 +66,9 @@ class AI(Robot):
         
         if self.target == None or self.target.isEmpty() or self.target.getTag("type") == "destroyed":
             list = render.findAllMatches("**/=type=robot")
+            if list.size() < 2:
+                return Task.cont
+
             target = randint(0, list.size() - 1 )
             self.target = list.getPath( target )
             if self.target == self.body.node:
