@@ -11,14 +11,16 @@ from panda3d.core import CollisionNode
 
 from BodyPart import BodyPart
 
-class Robot(NodePath):
+class Robot:
     
     def __init__(self, position, id):
-            
+        
+        self.id = id
         point = Point3()
         point.set(position.getX(), position.getY(), position.getZ() )
         self.body = BodyPart(point,"../Models/body","body",render)
         #base.cTrav.addCollider( self.body.cnodePath, base.event)
+        self.body.node.setTag("type","robot")
         
         leftArmPlace = self.body.node.find("**/arm1")
         if(leftArmPlace.isEmpty()):
@@ -46,7 +48,7 @@ class Robot(NodePath):
         self.legs.append(BodyPart(point,"../Models/robotleg","rightleg",rightLegPlace) )
 
         self.head = BodyPart(point,"../Models/robothead","head",headPlace)
-
+        
         min = Point3()
         max = Point3()
         self.body.node.calcTightBounds(min, max)
@@ -60,6 +62,7 @@ class Robot(NodePath):
         base.cTrav.addCollider( self.cnodePath, base.event)
 
     def damage(self):
+        self.body.node.setTag("type","destroyed")
         self.body.node.removeNode()
         return 0
 
