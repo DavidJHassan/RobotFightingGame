@@ -59,7 +59,8 @@ class MyApp(ShowBase):
         self.ThirdPerson = True
         self.cameraDirection = Vec3()
         self.cameraDirection.set(0.0,1.0,0.0)
-        self.Zoom = 0
+        self.fpvec = Vec3() #Used to set the correct camera location for First Person View
+        self.fpvec.set(0,2.0, 0)
         self.CAMERA_HEIGHT = 12
         self.CAMERA_LENGTH = 25
         self.setCamera()
@@ -179,10 +180,10 @@ class MyApp(ShowBase):
 
     def setCamera(self):
         if(self.ThirdPerson):
-            self.camera.setPos(self.player.getX() - self.CAMERA_LENGTH * self.cameraDirection.getX(), self.player.getY() - (self.CAMERA_LENGTH * self.cameraDirection.getY())+ self.Zoom, self.player.getZ() + self.CAMERA_HEIGHT)
+            self.camera.setPos(self.player.getX() - (self.CAMERA_LENGTH * self.cameraDirection.getX()), self.player.getY() - ( self.CAMERA_LENGTH  * self.cameraDirection.getY()), self.player.getZ() + self.CAMERA_HEIGHT)
             self.camera.setHpr( self.rotationX, -20 + self.rotationY, self.rotationZ)
         else:
-            self.camera.setPos(self.player.getX(), self.player.getY()+2, self.player.getZ() + self.CAMERA_HEIGHT - 5)#-2 and -4 to adjust into fpv
+            self.camera.setPos(self.player.getX(), self.player.getY() + self.fpvec.getX(), self.player.getZ() + self.CAMERA_HEIGHT - 3)#-4 to adjust into fpv
             self.camera.setHpr( self.rotationX, -20 + self.rotationY ,self.rotationZ)
 
     def lookLeft(self):
@@ -220,9 +221,12 @@ class MyApp(ShowBase):
         
         if self.ThirdPerson == False:
             self.player.setHpr(self.rotationX,0,0)
+            self.fpvec.set(0,2.0, 0)
+            self.fpvec = matrix.xform(self.fpvec)
         else: 
             self.cameraDirection.set(0,1,0)
             self.cameraDirection = matrix.xform(self.cameraDirection)
+
 
         self.setCamera()
 
@@ -254,21 +258,20 @@ class MyApp(ShowBase):
             self.ThirdPerson = False
         else:
             self.ThirdPerson = True
+            self.lookX()
         
         self.setCamera()
 
     def ZoomIn(self):
-        if(self.Zoom < self.CAMERA_LENGTH - 15):
-            self.Zoom+=.1
+        self.CAMERA_LENGTH -=  0.1
         self.setCamera()
 
     def ZoomOut(self):
-        if(self.Zoom > -(self.CAMERA_LENGTH - 10) ):
-            self.Zoom-=.1
+        self.CAMERA_LENGTH +=  0.1
         self.setCamera()
     
     def ResetZoom(self):
-        self.Zoom = 0
+        self.CAMERA_LENGTH = 25
 
 
 app = MyApp()
