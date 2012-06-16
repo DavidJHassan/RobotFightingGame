@@ -183,7 +183,7 @@ class MyApp(ShowBase):
             self.camera.setPos(self.player.getX() - (self.CAMERA_LENGTH * self.cameraDirection.getX()), self.player.getY() - ( self.CAMERA_LENGTH  * self.cameraDirection.getY()), self.player.getZ() + self.CAMERA_HEIGHT)
             self.camera.setHpr( self.rotationX, -20 + self.rotationY, self.rotationZ)
         else:
-            self.camera.setPos(self.player.getX(), self.player.getY() + self.fpvec.getX(), self.player.getZ() + self.CAMERA_HEIGHT - 3)#-4 to adjust into fpv
+            self.camera.setPos(self.player.getX() + self.fpvec.getX(), self.player.getY() + self.fpvec.getY(), self.player.getZ() + self.CAMERA_HEIGHT - 3)#-4 to adjust into fpv
             self.camera.setHpr( self.rotationX, -20 + self.rotationY ,self.rotationZ)
 
     def lookLeft(self):
@@ -195,11 +195,26 @@ class MyApp(ShowBase):
         self.lookX()
 
     def lookUp(self):
-        self.rotationY+=0.5
+
+        if(self.ThirdPerson):
+            if(self.CAMERA_LENGTH >= 11.2 and self.CAMERA_HEIGHT > -2):
+                self.rotationY+=0.5
+                self.ZoomIn()
+                self.CAMERA_HEIGHT -= 0.1
+        else:
+            self.rotationY+=0.5
+            print("%f , %f",self.CAMERA_LENGTH,self.CAMERA_HEIGHT)
         self.setCamera()
 
     def lookDown(self):
-        self.rotationY-=0.5
+
+        if(self.ThirdPerson):
+            if(self.CAMERA_LENGTH <=26.5 and self.CAMERA_HEIGHT <=13.5):
+                self.rotationY-=0.5
+                self.ZoomOut()
+                self.CAMERA_HEIGHT += 0.1
+        else:
+            self.rotationY-=0.5
         self.setCamera()
 
     def tiltLeft(self):
@@ -221,12 +236,12 @@ class MyApp(ShowBase):
         
         if self.ThirdPerson == False:
             self.player.setHpr(self.rotationX,0,0)
-            self.fpvec.set(0,2.0, 0)
+            self.fpvec.set(0,2,0)
             self.fpvec = matrix.xform(self.fpvec)
-        else: 
+
+        else:
             self.cameraDirection.set(0,1,0)
             self.cameraDirection = matrix.xform(self.cameraDirection)
-
 
         self.setCamera()
 
@@ -254,6 +269,11 @@ class MyApp(ShowBase):
         self.setCamera()
 
     def TogglePerson(self):
+        self.rotationY = 0
+        self.ResetZoom()
+        self.CAMERA_HEIGHT = 12
+        self.CAMERA_LENGTH = 25
+
         if(self.ThirdPerson):
             self.ThirdPerson = False
         else:
