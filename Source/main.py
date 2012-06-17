@@ -9,11 +9,13 @@ from panda3d.core import CollisionHandlerEvent
 from panda3d.core import CollisionTraverser
 from panda3d.core import Mat3
 from panda3d.core import Vec3
+from pandac.PandaModules import Texture, TextureStage, DirectionalLight, AmbientLight, TexGenAttrib, VBase4
 import sys
 
 from Bullet import Bullet
 from Robot import Robot
 from AI import AI
+#from SkySphere import SkySphere
     
 class MyApp(ShowBase):
 
@@ -31,7 +33,12 @@ class MyApp(ShowBase):
         self.environ.reparentTo(self.render)
         self.environ.setScale(0.25, 0.25, 0.25)
         self.environ.setPos(-8, 42, 0)
-		
+
+        self.skybox = loader.loadModel("../Models/skybox.egg")
+        self.skybox.setPos(-8,42,0)
+        self.skybox.setScale(1000)
+        self.skybox.reparentTo(render)
+
         point = Point3()
         
         #Create robots and assign ids used to access the correct object from collision entry data.
@@ -292,7 +299,6 @@ class MyApp(ShowBase):
     
     def ResetZoom(self):
         self.CAMERA_LENGTH = 25
-
 
 app = MyApp()
 app.run()
