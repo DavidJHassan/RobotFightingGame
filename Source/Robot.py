@@ -15,9 +15,11 @@ class Robot(NodePath):
     
     def __init__(self, position, id):
             
+        self.id = id
         point = Point3()
         point.set(position.getX(), position.getY(), position.getZ() + 2.1)# 2.1 is a very close approximation to the length of the legs. By raising the torso up 2.1, we can then fit the legs underneath.
         self.body = BodyPart(point,"../Models/robotbody","body",render)
+        self.body.node.setTag("type", "robot")
         #base.cTrav.addCollider( self.body.cnodePath, base.event)
         
         leftArmPlace = self.body.node.find("**/leftarm")
@@ -80,6 +82,7 @@ class Robot(NodePath):
         base.cTrav.addCollider( self.cnodePath, base.event)
 
     def damage(self):
+        self.body.node.setTag("type", "destroyed")
         self.body.node.removeNode()
         return 0
 

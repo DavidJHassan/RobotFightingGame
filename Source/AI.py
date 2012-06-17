@@ -5,6 +5,7 @@ from direct.task import Task
 from direct.actor.Actor import Actor
 from direct.interval.IntervalGlobal import Sequence
 from panda3d.core import Point3
+from panda3d.core import Point2
 from panda3d.core import NodePath
 from panda3d.core import CollisionSphere
 from panda3d.core import CollisionNode
@@ -24,7 +25,7 @@ class AI(Robot):
         
         if self.type == 0:
             taskMgr.add( self.randomWalk, 'walk')
-            self.destination = Point3()
+            self.destination = Point2()
             self.setRandomPoint( self.destination )
         else:
             taskMgr.add( self.hunt, 'hunt')
@@ -42,15 +43,15 @@ class AI(Robot):
             return Task.done
 
         
-        if task.time - self.time < 0.1:
-                return Task.cont
+        if task.time - self.time <= 0.1:
+            return Task.cont
         self.time = task.time
                     
             
-        if calcDistance( self.destination, self.body.node.getPos() ) <= 1:
+        if calcDistance2D(self.destination, self.body.node.getPos().getXy() ) <= 1:
             self.setRandomPoint( self.destination )
 
-        direction = calcDirection(self.body.node.getPos(), self.destination )
+        direction = calcDirection2D(self.body.node.getPos().getXy(), self.destination )
         #print "randomWalk destination ="
         #print direction
 
@@ -59,13 +60,13 @@ class AI(Robot):
         return Task.cont
 
     def hunt( self, task ):
-        
         if self.body.node.isEmpty():
             return Task.done
 
         
         if self.target == None or self.target.isEmpty() or self.target.getTag("type") == "destroyed":
             list = render.findAllMatches("**/=type=robot")
+            print "list size = " + str(list.size())
             if list.size() < 2:
                 return Task.cont
 
@@ -73,16 +74,19 @@ class AI(Robot):
             self.target = list.getPath( target )
             if self.target == self.body.node:
                 return Task.cont
-        
-        if task.time - self.time < 0.1:
+
+        if task.time - self.time <= 0.1:
             return Task.cont
         self.time = task.time
         
-        if calcDistance( self.target.getPos(), self.body.node.getPos() ) < 10 and task.time - self.bulletTime >= 5:
-            Bullet(self.body.node.getX(), self.body.node.getY() + 1, self.body.node.getZ(), calcDirection( self.body.node.getPos(), self.target.getPos() ), self.id)
-            self.bulletTime = task.time
+        if calcDistance2D( self.target.getPos().getXy(), self.body.node.getPos().getXy() ) < 1:
+            if task.time - self.bulletTime >= 5:
+                Bullet(self.body.node.getX(), self.body.node.getY(), self.body.node.getZ(), calcDirection( self.body.node.getPos(), self.target.getPos() ), self.id)
+                self.bulletTime = task.time
         else:
-            direction = calcDirection(self.body.node.getPos(), self.target.getPos() )
+            direction = calcDirection2D(self.body.node.getPos().getXy(), self.target.getPos().getXy() )
+            print "in hunt direction="
+            print direction
             self.body.node.setX( self.body.node.getX() + direction.getX() )
             self.body.node.setY( self.body.node.getY() + direction.getY() )
 
