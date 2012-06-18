@@ -11,14 +11,20 @@ from panda3d.core import CollisionNode
 
 from BodyPart import BodyPart
 
-class Robot(NodePath):
+class Robot:
     
-    def __init__(self, position, id):
-            
+    def __init__(self, position, id, scale):
+        
+        
+        if scale == 0:
+            scale = 0.1
+
+        self.health = scale * 3 
+
         self.id = id
         point = Point3()
-        point.set(position.getX(), position.getY(), position.getZ() + 2.1)# 2.1 is a very close approximation to the length of the legs. By raising the torso up 2.1, we can then fit the legs underneath.
-        self.body = BodyPart(point,"../Models/robotbody","body",render)
+        point.set(position.getX(), position.getY(), position.getZ() + (2.1 * scale))# 2.1 is a very close approximation to the length of the legs. By raising the torso up 2.1, we can then fit the legs underneath.
+        self.body = BodyPart(point,"../Models/robotbody","body",render,scale,scale,scale)
         self.body.node.setTag("type", "robot")
         #base.cTrav.addCollider( self.body.cnodePath, base.event)
         
@@ -76,15 +82,18 @@ class Robot(NodePath):
         print "size ="
         print self.size
         self.cnode = CollisionNode(str(id))
-        self.cnode.addSolid(CollisionSphere(0, 0, 0, self.size.length() /2 ) )
+        self.cnode.addSolid(CollisionSphere(0, 0, 0, self.size.length() /(2 * scale) ) )
         self.cnodePath = self.body.node.attachNewNode(self.cnode)
         self.cnodePath.show()
         base.cTrav.addCollider( self.cnodePath, base.event)
 
     def damage(self):
-        self.body.node.setTag("type", "destroyed")
-        self.body.node.removeNode()
-        return 0
+        self.health -= 1
+        
+        if self.health <= 0:
+            self.body.node.setTag("type", "destroyed")
+            self.body.node.removeNode()
+        return self.health
 
 
 

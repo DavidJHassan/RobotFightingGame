@@ -18,8 +18,8 @@ from StandardFunctions import *
 
 class AI(Robot):
     
-    def __init__(self, position, id):
-        Robot.__init__(self,position,id)
+    def __init__(self, position, id, scale):
+        Robot.__init__(self,position,id,scale)
             
         self.type = randint(0,1)
         
