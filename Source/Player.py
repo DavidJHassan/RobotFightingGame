@@ -13,6 +13,7 @@ from panda3d.core import CollisionNode
 
 from BodyPart import BodyPart
 from Robot import Robot
+from Bullet import Bullet
 
 class Player(Robot):
     
@@ -26,7 +27,7 @@ class Player(Robot):
         
         self.playerDirection = Vec3()
         self.playerDirection.set(0.0,1.0,0.0)
-
+        self.scale = scale
         
         #Sets up a Third Person Camera View#
         self.ThirdPerson = True
@@ -34,8 +35,8 @@ class Player(Robot):
         self.cameraDirection.set(0.0,1.0,0.0)
         self.fpvec = Vec3() #Used to set the correct camera location for First Person View
         self.fpvec.set(0,2.0, 0)
-        self.CAMERA_HEIGHT = 12
-        self.CAMERA_LENGTH = 25
+        self.CAMERA_HEIGHT = 12*self.scale
+        self.CAMERA_LENGTH = 25*self.scale
         self.setCamera()
         ####################################
         
@@ -111,7 +112,7 @@ class Player(Robot):
             base.camera.setPos(self.body.node.getX() - (self.CAMERA_LENGTH * self.cameraDirection.getX()), self.body.node.getY() - ( self.CAMERA_LENGTH  * self.cameraDirection.getY()), self.body.node.getZ() + self.CAMERA_HEIGHT)
             base.camera.setHpr( self.rotationX, -20 + self.rotationY, self.rotationZ)
         else:
-            base.camera.setPos(self.body.node.getX() + self.fpvec.getX(), self.body.node.getY() + self.body.node.getY(), self.body.node.getZ() + self.CAMERA_HEIGHT - 3)#-4 to adjust into fpv
+            base.camera.setPos(self.body.node.getX() + self.fpvec.getX(), self.body.node.getY() + self.fpvec.getY(), self.body.node.getZ() + self.CAMERA_HEIGHT - 3*self.scale)
             base.camera.setHpr( self.rotationX, -20 + self.rotationY ,self.rotationZ)
     
     def lookLeft(self):
@@ -123,26 +124,26 @@ class Player(Robot):
         self.lookX()
     
     def lookUp(self):
-        
         if(self.ThirdPerson):
-            if(self.CAMERA_LENGTH >= 11.2 and self.CAMERA_HEIGHT > -2):
+            if(self.CAMERA_LENGTH >= 0 and self.CAMERA_HEIGHT >= -10*self.scale):
                 self.rotationY+=0.5
-                self.ZoomIn()
-                self.CAMERA_HEIGHT -= 0.1
+                self.CAMERA_LENGTH -= 0.1 *self.scale
+                self.CAMERA_HEIGHT -= 0.15*self.scale
         else:
-            self.rotationY+=0.5
-            print("%f , %f",self.CAMERA_LENGTH,self.CAMERA_HEIGHT)
+            if(self.rotationY <=90):
+                self.rotationY+=0.5
         self.setCamera()
     
     def lookDown(self):
         
         if(self.ThirdPerson):
-            if(self.CAMERA_LENGTH <=26.5 and self.CAMERA_HEIGHT <=13.5):
+            if(self.CAMERA_LENGTH <=26.5*self.scale and self.CAMERA_HEIGHT <=13.5*self.scale):
                 self.rotationY-=0.5
-                self.ZoomOut()
-                self.CAMERA_HEIGHT += 0.1
+                self.CAMERA_LENGTH += 0.1 *self.scale
+                self.CAMERA_HEIGHT += 0.15*self.scale
         else:
-            self.rotationY-=0.5
+            if(self.rotationY >= -65):
+                self.rotationY-=0.5
         self.setCamera()
     
     def tiltLeft(self):
@@ -199,8 +200,8 @@ class Player(Robot):
     def TogglePerson(self):
         self.rotationY = 0
         self.ResetZoom()
-        self.CAMERA_HEIGHT = 12
-        self.CAMERA_LENGTH = 25
+        self.CAMERA_HEIGHT = 12*self.scale
+        self.CAMERA_LENGTH = 25*self.scale
         
         if(self.ThirdPerson):
             self.ThirdPerson = False
@@ -219,5 +220,5 @@ class Player(Robot):
         self.setCamera()
     
     def ResetZoom(self):
-        self.CAMERA_LENGTH = 25
+        self.CAMERA_LENGTH = 25*self.scale
 

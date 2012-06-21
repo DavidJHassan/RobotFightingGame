@@ -85,8 +85,8 @@ class AI(Robot):
                 self.bulletTime = task.time
         else:
             direction = calcDirection2D(self.body.node.getPos().getXy(), self.target.getPos().getXy() )
-            print "in hunt direction="
-            print direction
+           # print "in hunt direction="
+          #  print direction
             self.body.node.setX( self.body.node.getX() + direction.getX() )
             self.body.node.setY( self.body.node.getY() + direction.getY() )
 

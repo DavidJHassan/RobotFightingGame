@@ -48,12 +48,12 @@ class MyApp(ShowBase):
         self.id = 0
         for i in range( 10 ):
             point.set(randint(-50, 50), randint(-50, 50), 0)
-            self.robots[self.id] = AI(point, self.id, randint(1,10) / 5 ) 
+            #self.robots[self.id] = AI(point, self.id, randint(1,10) / 5 )
             self.id += 1
 
         point = Point3()
         point.set(0,0,0)
-        self.player = Player(point, self.id, 1)
+        self.player = Player(point, self.id,1)
         self.robots[self.id] = self.player
         self.id += 1
 
