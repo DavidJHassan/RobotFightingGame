@@ -14,7 +14,7 @@ from panda3d.core import Vec3
 class Bullet(NodePath):
     
     def __init__(self, x, y, z, direction, id):
-        NodePath.__init__(self,loader.loadModel("models/box"))
+        NodePath.__init__(self,loader.loadModel("../Models/missile"))
  
         self.reparentTo(render )
         self.setPos(x, y, z)
