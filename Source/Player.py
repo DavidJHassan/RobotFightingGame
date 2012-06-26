@@ -105,7 +105,7 @@ class Player(Robot):
         return Task.cont
     
     def fire(self):
-        Bullet(self.body.node.getX(), self.body.node.getY(), self.body.node.getZ(), self.playerDirection, -1)
+        Bullet(self.body.node.getX(), self.body.node.getY(), self.body.node.getZ(), self.playerDirection, self.id)
     
     def setCamera(self):
         if(self.ThirdPerson):

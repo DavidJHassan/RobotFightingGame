@@ -10,14 +10,18 @@ from panda3d.core import CollisionSphere
 from panda3d.core import CollisionNode
 
 from BodyPart import BodyPart
-
+from CreateEquipment import CreateEquipment
+from Equipment import Equipment
 class Robot:
     
     def __init__(self, position, id, scale):
         
-        
+
         if scale == 0:
             scale = 0.1
+
+        self.equipment = []
+        self.equipment.append(CreateEquipment("../models/box","leftshoulder",50,50))
 
         self.health = scale * 3 
 
@@ -92,7 +96,17 @@ class Robot:
         
         if self.health <= 0:
             self.body.node.setTag("type", "destroyed")
+
+            for i in self.equipment:
+                if(i.getModel().isEmpty()):
+                    raise Exception("Model not found in damage")
+                i.getModel().setPos(self.body.node.getX(),self.body.node.getY(),0)
+                i.getModel().reparentTo(render)
+               # i.getModel().setScale(scaleX, scaleY, scaleZ)
+
             self.body.node.removeNode()
+
+
         return self.health
 
 

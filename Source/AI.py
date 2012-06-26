@@ -33,7 +33,7 @@ class AI(Robot):
                 
         self.time = 0
         self.bulletTime = 0
-            
+
     def setRandomPoint(self, point):
         point.setX( randint(-50, 50) )
         point.setY(randint(-50, 50) )

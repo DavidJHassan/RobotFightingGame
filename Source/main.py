@@ -16,8 +16,7 @@ from Bullet import Bullet
 from Robot import Robot
 from AI import AI
 from Player import Player
-#from SkySphere import SkySphere
-    
+
 class MyApp(ShowBase):
 
     def __init__(self):
@@ -40,15 +39,18 @@ class MyApp(ShowBase):
         self.skybox.setScale(1000)
         self.skybox.reparentTo(render)
 
+
+
+
         point = Point3()
         
         #Create robots and assign ids used to access the correct object from collision entry data.
         #TODO: Consider extending ids to all sprites
         self.robots = dict()
         self.id = 0
-        for i in range( 10 ):
+        for i in range( 5 ):
             point.set(randint(-50, 50), randint(-50, 50), 0)
-            #self.robots[self.id] = AI(point, self.id, randint(1,10) / 5 )
+            self.robots[self.id] = AI(point, self.id, randint(1,10) / 5 )
             self.id += 1
 
         point = Point3()
@@ -90,10 +92,15 @@ class MyApp(ShowBase):
         try:
             if self.robots[id].damage() <= 0 :
                 del self.robots[id]
+                if(id == self.player.id):
+                    raise Exception("You are dead")
+
             point = Point3()
             point.set(randint(-50, 50), randint(-50, 50), 0)
             self.robots[self.id] = AI(point, self.id, randint(1,10) / 5 ) 
             self.id += 1
+
+
 
         except KeyError:
             #TODO: figure out why keyerror is being called
