@@ -15,10 +15,11 @@ from Equipment import Equipment
 class Robot:
     
     def __init__(self, position, id, scale):
-        
 
         if scale == 0:
             scale = 0.1
+
+
 
         self.equipment = []
         self.equipment.append(CreateEquipment("../models/box","leftshoulder",50,50))

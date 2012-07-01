@@ -1,4 +1,5 @@
-from math import pi, sin, cos
+from math import *
+from panda3d.core import Vec3
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
@@ -32,3 +33,27 @@ def calcDirection( a, b):
 #Function is only needed to make the code easier to understand
 def calcDirection2D( a, b):
     return calcDirection(a, b)
+
+
+def UnsignedAngleBetweenTwoV3(a, b):
+    a = NormalizeV3(a)
+    b = NormalizeV3(b)
+    Angle = acos(DotV3(a,b))
+    return Angle
+
+def radiansToDegrees(x):
+    return x*(180/pi)
+
+def degreesToRadians(x):
+    return x*(pi/180)
+
+
+def NormalizeV3(a):
+        return scaleV3( 1/sqrt( pow(a.getX(),2) + pow(a.getY(),2) + pow(a.getZ(), 2)) , a)
+
+
+def DotV3(a,b):
+    return a.getX()*b.getX() + a.getY()*b.getY() +  a.getZ() * b.getZ()
+
+def scaleV3(a,v):
+    return Vec3( a*v.getX(), a*v.getY(), a*v.getZ())

@@ -20,15 +20,14 @@ class Player(Robot):
     def __init__(self, position, id, scale):
         Robot.__init__(self,position,id,scale)
 
-        
         self.rotationX = 0
         self.rotationY = 0
         self.rotationZ = 0
-        
+
         self.playerDirection = Vec3()
         self.playerDirection.set(0.0,1.0,0.0)
         self.scale = scale
-        
+
         #Sets up a Third Person Camera View#
         self.ThirdPerson = True
         self.cameraDirection = Vec3()

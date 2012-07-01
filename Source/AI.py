@@ -10,7 +10,7 @@ from panda3d.core import NodePath
 from panda3d.core import CollisionSphere
 from panda3d.core import CollisionNode
 from random import randint
-
+from panda3d.core import Vec2
 from BodyPart import BodyPart
 from Bullet import Bullet
 from Robot import Robot
@@ -51,10 +51,10 @@ class AI(Robot):
         if calcDistance2D(self.destination, self.body.node.getPos().getXy() ) <= 1:
             self.setRandomPoint( self.destination )
 
-        direction = calcDirection2D(self.body.node.getPos().getXy(), self.destination )
+        direction = calcDirection2D(self.body.node.getPos().getXy(), self.destination)
         #print "randomWalk destination ="
         #print direction
-
+        self.body.node.setH(Vec2.signedAngleDeg(Vec2(0,1), Vec2(direction.getX(),direction.getY())))
         self.body.node.setX( self.body.node.getX() + direction.getX() )
         self.body.node.setY( self.body.node.getY() + direction.getY() )
         return Task.cont
@@ -81,12 +81,13 @@ class AI(Robot):
         
         if calcDistance2D( self.target.getPos().getXy(), self.body.node.getPos().getXy() ) < 1:
             if task.time - self.bulletTime >= 5:
-                Bullet(self.body.node.getX(), self.body.node.getY(), self.body.node.getZ(), calcDirection( self.body.node.getPos(), self.target.getPos() ), self.id)
+                Bullet(self.body.node.getX(), self.body.node.getY(), self.body.node.getZ(), calcDirection( self.body.node.getPos(), self.target.getPos() ),self.id)
                 self.bulletTime = task.time
         else:
             direction = calcDirection2D(self.body.node.getPos().getXy(), self.target.getPos().getXy() )
            # print "in hunt direction="
           #  print direction
+            self.body.node.setH(Vec2.signedAngleDeg(Vec2(0,1), Vec2(direction.getX(),direction.getY())))
             self.body.node.setX( self.body.node.getX() + direction.getX() )
             self.body.node.setY( self.body.node.getY() + direction.getY() )
 
